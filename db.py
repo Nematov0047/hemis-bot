@@ -32,7 +32,7 @@ class DB():
         self.conn.commit()
 
     def update_cookies(self, login, cookies):
-        self.c.execute("UPDATE users_cookies SET cookies='"+cookies+"' WHERE login='"+login+"'")
+        self.c.execute("UPDATE users_cookies SET cookies=?, time=? WHERE login='"+login+"'", (cookies, int(time.time()+3540)))
         self.conn.commit()
                         
 db = DB()
