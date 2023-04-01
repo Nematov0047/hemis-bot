@@ -49,7 +49,13 @@ class SCRAPER():
                 db.update_cookies(login, json.dumps(auth_cookies))
         else:
             self.cookies = cookies
-
+    
+    # shu funksiya True return qilsa, login va parol to'g'ri bo'ladi, va qolgan funksiyalar ham not_logged_in return qilmasligi kerak
+    def is_everything_ok(self):
+        if self.cookies != False:
+            return True
+        else:
+            return False
     # nblarni olib beruvchi funksiya, dictionary return qiladi
     # aynan kimi davomati kerakligini login orqali aniqlashtirib oladi
     # Bu funksiya hozircha faqat bir dona o'qilyotgan semestrni oladi, kerak bo'lsa boshqalarini ham olsak bo'ladi keyinchalik
