@@ -121,11 +121,41 @@ class SCRAPER():
                 return False
         else:
             return 'not_logged_in'
+        
+    # bu funkisya dars jadvalini olib berishi kerak
+    # haftani kiritishimiz kerak ekan, misol uchun 3-apreldan 8-aprelgacha bo'lgan hafta 760ekan :)
+    # haftani qandeydir argument qilib pass qilamiz, yoki nimadir yozaman keyinroq
+    def get_dars_jadvali(self):
+        m_cookies = self.cookies
+        if m_cookies != False:
+            dars_jadvali_html = requests.get(URL + '/education/time-table?week=760', cookies=m_cookies).text
+            soup = BeautifulSoup(dars_jadvali_html, 'lxml')
+            boxes = soup.find_all('div', class_='box box-success sh')
+            db = []
+            for box in boxes:
+                title = box.find('h3').text.strip().split()
+                trs = box.find_all('li')
+                darslar = []
+                for tr in trs:
+                    ustoz_ismi = tr.get('title')
+                    dars_nomi = tr.find(string=True, recursive=False).strip()
+                    dars_turi = tr.find_all('span')[2].text
+                    data2 = {
+                        'dars_nomi': dars_nomi, 
+                        'ustoz_ismi':ustoz_ismi,
+                        'dars_turi':dars_turi
+                    }
+                    darslar.append(data2)
 
+                data = {
+                    'kun_nomi':title[0],
+                    'sana':title[1],
+                    'oy_nomi':title[2],
+                    'yil':title[3],
+                    'darslar':darslar
+                }
+                db.append(data)
+            return db
 
-
-
-s = SCRAPER('303201100507','')
-# d = s.get_davomat()
-d = s.get_uzlashtirish()
-print(d)
+        else:
+            return 'not_logged_in'
